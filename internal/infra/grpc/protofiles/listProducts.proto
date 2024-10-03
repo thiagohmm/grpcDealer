@@ -1,0 +1,31 @@
+syntax = "proto3";
+package pb;
+option go_package = "internal/infra/grpc/pb";
+
+
+message ListProductsRequest {
+   repeated int32 idrevendedor = 1;
+}
+
+
+message Product {
+  string Categoria = 1;
+  int32 Codigo = 2;
+  string CodigodeBarra = 3;
+  string Descricao = 4;
+  int32 IdRevendedor = 5;
+  string Marca = 6;
+  bool PodeSolicitarNovoCodigoDeBarras = 7;
+  bool PodeSolicitarPermissaoDeVendas = 8;
+  bool ProdutoDoRevendedor = 9;
+  string Subcategoria = 10;
+}
+
+message ListProductsResponse {
+    repeated Product products = 1;
+}
+
+
+service ListProductsService {
+    rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+}
