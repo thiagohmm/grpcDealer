@@ -1,22 +1,25 @@
 package usecase
 
-import "grpcDemonstracao/internal/entity"
+import (
+	"database/sql"
+	"grpcDemonstracao/internal/entity"
+)
 
 type ListAllDealersInputDTO struct {
 	IdRevendedor []int
 }
 
 type ListAllDealersOutputDTO struct {
-	Categoria                       string
-	Codigo                          int
-	CodigodeBarra                   string
-	Descricao                       string
-	IdRevendedor                    int
-	Marca                           string
-	PodeSolicitarNovoCodigoDeBarras bool
-	PodeSolicitarPermissaoDeVendas  bool
-	ProdutoDoRevendedor             bool
-	Subcategoria                    string
+	Categoria                       sql.NullString `json:"categoria"`
+	Codigo                          int64          `json:"codigo"`
+	CodigodeBarra                   sql.NullString `json:"codigodeBarra"`
+	Descricao                       sql.NullString `json:"descricao"`
+	IdRevendedor                    sql.NullInt64  `json:"idRevendedor"`
+	Marca                           sql.NullString `json:"marca"`
+	PodeSolicitarNovoCodigoDeBarras bool           `json:"podeSolicitarNovoCodigoDeBarras"`
+	PodeSolicitarPermissaoDeVendas  bool           `json:"podeSolicitarPermissaoDeVendas"`
+	ProdutoDoRevendedor             bool           `json:"produtoDoRevendedor"`
+	Subcategoria                    sql.NullString `json:"subcategoria"`
 }
 
 type ListAllDealersUseCase struct {
@@ -45,16 +48,16 @@ func (u *ListAllDealersUseCase) Execute(input *ListAllDealersInputDTO) ([]*ListA
 
 	for _, product := range dealers {
 		products = append(products, &ListAllDealersOutputDTO{
-			Categoria:                       product.Categoria,
+			Categoria:                       sql.NullString{String: product.Categoria.String, Valid: true}, // Access the String field of product.Categoria
 			Codigo:                          product.Codigo,
-			CodigodeBarra:                   product.CodigodeBarra,
-			Descricao:                       product.Descricao,
+			CodigodeBarra:                   sql.NullString{String: product.CodigodeBarra.String, Valid: true}, // Access the String field of product.CodigodeBarra
+			Descricao:                       sql.NullString{String: product.Descricao.String, Valid: true},     // Access the String field of product.Descricao
 			IdRevendedor:                    product.IdRevendedor,
-			Marca:                           product.Marca,
+			Marca:                           sql.NullString{String: product.Marca.String, Valid: true}, // Access the String field of product.Marca
 			PodeSolicitarNovoCodigoDeBarras: product.PodeSolicitarNovoCodigoDeBarras,
 			PodeSolicitarPermissaoDeVendas:  product.PodeSolicitarPermissaoDeVendas,
 			ProdutoDoRevendedor:             product.ProdutoDoRevendedor,
-			Subcategoria:                    product.Subcategoria,
+			Subcategoria:                    sql.NullString{String: product.Subcategoria.String, Valid: true}, // Access the String field of product.Subcategoria
 		})
 	}
 	return products, nil

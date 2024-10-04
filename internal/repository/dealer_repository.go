@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"grpcDemonstracao/internal/entity"
 )
 
@@ -131,8 +132,25 @@ OR ( (p.Ativo=1) AND
 	)
 ORDER BY p.idproduto
 `
+	p_idrevendedor = 0
+	p_codigobarras := sql.NullString{String: "", Valid: false} // Substitua por seu valor real
+	p_codigo := sql.NullString{String: "", Valid: false}       // Substitua por seu valor real
+	p_descricao := sql.NullString{String: "", Valid: false}    // Substitua por seu valor real
+	p_marca := sql.NullString{String: "", Valid: false}        // Substitua por seu valor real
+	p_categoria := sql.NullString{String: "", Valid: false}    // Substitua por seu valor real
+	p_subcategoria := sql.NullString{String: "", Valid: false} // Substitua por seu valor real
+	p_meucatalogo := sql.NullString{String: "", Valid: false}  // Substitua por seu valor real
 
-	rows, err := r.Db.Query(query, sql.Named("p_idrevendedor", p_idrevendedor))
+	rows, err := r.Db.Query(query,
+		sql.Named("p_idrevendedor", p_idrevendedor),
+		sql.Named("p_codigobarras", p_codigobarras),
+		sql.Named("p_codigo", p_codigo),
+		sql.Named("p_descricao", p_descricao),
+		sql.Named("p_marca", p_marca),
+		sql.Named("p_categoria", p_categoria),
+		sql.Named("p_subcategoria", p_subcategoria),
+		sql.Named("p_meucatalogo", p_meucatalogo),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -140,8 +158,13 @@ ORDER BY p.idproduto
 
 	var dealers []*entity.Dealer
 	for rows.Next() {
+		fmt.Println("Entrou no for")
+		fmt.Println(rows)
 		var product entity.Dealer
-		if err := rows.Scan(&product.Codigo, &product.Descricao, &product.Marca, &product.CodigodeBarra, &product.Categoria, &product.Subcategoria, &product.IdRevendedor, &product.PodeSolicitarPermissaoDeVendas, &product.PodeSolicitarNovoCodigoDeBarras, &product.ProdutoDoRevendedor); err != nil {
+		if err := rows.Scan(&product.Codigo, &product.Descricao, &product.Marca, &product.CodigodeBarra,
+			&product.Categoria, &product.Subcategoria, &product.IdRevendedor,
+			&product.PodeSolicitarPermissaoDeVendas, &product.PodeSolicitarNovoCodigoDeBarras,
+			&product.ProdutoDoRevendedor); err != nil {
 			return nil, err
 		}
 		dealers = append(dealers, &product)
